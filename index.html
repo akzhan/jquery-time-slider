@@ -20,6 +20,10 @@
 			<p><input type="text" class="timepick" value="5:00" /></p>
 		</fieldset>
 
+		<fieldset><legend>Actions</legend>
+			<input type="button" id="disabler" value="Disable time sliders" />
+		</fieldset>
+
 		<fieldset><legend>Source code</legend>
 		<script src="http://gist.github.com/517176.js?file=Example-of-usage-jquery-time-slider.js"></script>
 		</fieldset>
@@ -36,8 +40,14 @@
 	$('.timepick').change(function()
 	{
 		$('#chosen-time').text($(this).timeslider('get').toString());
-		}).timeslider({value: '12:00'});
-})(jQuery);			
+	}).timeslider({value: '12:00'});
+
+	$('#disabler').click(function(e)
+	{
+		e.preventDefault();
+		$('.timepick').timeslider('toggle');
+	});
+})(jQuery);
 		</script>
 	</body>
 </html>

@@ -36,16 +36,17 @@ div.timeslider-up-arrow
 	background: url("pt_controls.png") 0px 0px;
 }
 
-div.timeslider-down-arrow.timeslider-disabled
+div.timeslider-down-arrow.timeslider-disabled, div.timeslider-disabled div.timeslider-down-arrow
 {
 	background: url("pt_controls.png") -18px -20px;
+	cursor: inherit;
 }
 
-div.timeslider-up-arrow.timeslider-disabled
+div.timeslider-up-arrow.timeslider-disabled, div.timeslider-disabled div.timeslider-up-arrow
 {
 	background: url("pt_controls.png") 0px -20px;
+	cursor: inherit;
 }
-
 
 div.timeslider-slider-line
 {
@@ -54,6 +55,11 @@ div.timeslider-slider-line
 	width: 108px;
 	height: 18px;
 	background: url("pt_controls.png") -52px 0px;
+}
+
+div.timeslider-disabled div.timeslider-slider-line
+{
+	background: url("pt_controls.png") -52px -20px;
 }
 
 div.timeslider-slider
@@ -65,6 +71,12 @@ div.timeslider-slider
 	height: 20px;
 	background: url("pt_controls.png") -36px 0px;
 	cursor: pointer;
+}
+
+div.timeslider-disabled div.timeslider-slider
+{
+	background: url("pt_controls.png") -36px -20px;
+	cursor: inherit;
 }
 
 div.timeslider-labels
@@ -80,5 +92,8 @@ div.timeslider-label
 	font-size: 85%;
 }
 
-
+div.timeslider-disabled div.timeslider-labels
+{
+	visibility: hidden;
+}
 

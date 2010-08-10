@@ -149,6 +149,7 @@
 
 			var value = null;
 			var moving = false;
+			var disabled = false;
 
 			var updateSlider = function()
 			{
@@ -202,8 +203,42 @@
 				return value;
 			};
 
+			var pleaseEnabled = function()
+			{
+				return !disabled;
+			};
+
+			var pleaseEnable = function()
+			{
+				if (disabled)
+				{
+					$container.removeClass('timeslider-disabled');
+					disabled = false;
+				}
+				return $this.trigger('toggled');
+			};
+
+			var pleaseDisable = function()
+			{
+				if (!disabled)
+				{
+					$container.addClass('timeslider-disabled');
+					disabled = true;
+				}
+				return $this.trigger('toggled');
+			};
+
+			var pleaseToggle = function()
+			{
+				return disabled ? pleaseEnable() : pleaseDisable();
+			};
+
 			var dragger = function(e)
 			{
+				if (disabled)
+				{
+					return;
+				}
 				pleaseSet(fromPixels(e.pageX - $sliderLine.offset().left ));
 			};
 
@@ -216,7 +251,7 @@
 
 			$slider.mousedown(function()
 			{
-				if (moving)
+				if (moving || disabled)
 				{
 					return;
 				}
@@ -227,7 +262,7 @@
 
 			$downArrow.click(function()
 			{
-				if (isLeftEdge(value))
+				if (disabled || isLeftEdge(value))
 				{
 					return;
 				}
@@ -248,7 +283,7 @@
 
 			$upArrow.click(function()
 			{
-				if (isRightEdge(value))
+				if (disabled || isRightEdge(value))
 				{
 					return;
 				}
@@ -269,7 +304,11 @@
 
 			var commands = {
 				'set': pleaseSet,
-				'get': pleaseGet
+				'get': pleaseGet,
+				'disable': pleaseDisable,
+				'enable': pleaseEnable,
+				'toggle': pleaseToggle,
+				'enabled': pleaseEnabled
 			};
 
 			$this.data(DATA_CMDS, commands);
