@@ -115,17 +115,12 @@
 			var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
 			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
-			var $input = fromInput ? $this : $('<input type="hidden" />');
-			var $showField = fromInput ? $input : $('<input type="text" maxlength="5" size="5" />');
+			var $input = fromInput ? $this : $('<input type="text" maxlength="5" size="5" />');
 
-			if (!fromInput)
+			if (!fromInput && $this.attr('name'))
 			{
-				if ($this.attr('name'))
-				{
-					options.name = $this.attr('name');
-					$this.attr('name', '');
-				}
-				$this.after($input);
+				options.name = $this.attr('name');
+				$this.attr('name', '');
 			}
 			if (options.name)
 			{
@@ -173,10 +168,6 @@
 			var updateInput = function()
 			{
 				$input.val(toText(value));
-				if ($input != $showField)
-				{
-					$showField.val(toText(value));
-				}
 			};
 
 			var updateArrows = function()
@@ -233,7 +224,6 @@
 				{
 					$container.removeClass('timeslider-disabled');
 					$input.removeAttr('disabled');
-					$showField.removeAttr('disabled');
 					disabled = false;
 				}
 				return $this.trigger('toggled');
@@ -245,7 +235,6 @@
 				{
 					$container.addClass('timeslider-disabled');
 					$input.attr('disabled', 'disabled');
-					$showField.attr('disabled', 'disabled');
 					disabled = true;
 				}
 				return $this.trigger('toggled');
@@ -330,29 +319,23 @@
 				pleaseSet(value);
 			});
 
-			var moveFocus = function(e)
+			$input.focus(function(e)
 			{
 				e.preventDefault();
 				$slider.focus();
-			};
+			});
 
-			$input.focus(moveFocus);
-			if ($showField != $input)
-			{
-				$showField.focus(moveFocus);
-			}
-			
 			$slider.keydown(function(e)
 			{
 				switch(e.keyCode)
 				{
 				case VK_LEFT:
-					$downArrow.click();
 					e.preventDefault();
+					$downArrow.click();
 					break;
 				case VK_RIGHT:
-					$upArrow.click();
 					e.preventDefault();
+					$upArrow.click();
 					break;
 				}
 			});
@@ -373,15 +356,15 @@
 			{
 				pleaseDisable();
 			}
-			if ($input != $showField)
+			if (!fromInput)
 			{
-				$this.after($showField);
+				$this.after($input);
 			}
 			if (!showValue)
 			{
-				$showField.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
+				$input.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
 			}
-			$showField.attr({readonly: 'readonly', tabindex: -1}).show();
+			$input.attr({readonly: 'readonly', tabindex: -1}).show();
 		};
 
 		var command = null;
