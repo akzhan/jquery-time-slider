@@ -17,7 +17,11 @@
 		</fieldset>
 
 		<fieldset><legend>Input field to be converted into time slider</legend>
-			<p><input type="text" class="timepick" value="5:00" /></p>
+			<p><input type="text" class="timepick" size="5" maxlength="5" /></p>
+		</fieldset>
+
+		<fieldset><legend>Input field to be converted into time slider with not shown value</legend>
+			<p><input type="text" class="timepick2" value="5:00" /></p>
 		</fieldset>
 
 		<fieldset><legend>Actions</legend>
@@ -45,8 +49,11 @@
 	$('#toggler').click(function(e)
 	{
 		e.preventDefault();
-		$('.timepick').timeslider('toggle');
+		$('.timepick .timepick2').timeslider('toggle');
 	});
+
+	$('.timepick2').timeslider({ showValue: false });
+
 })(jQuery);
 		</script>
 	</body>

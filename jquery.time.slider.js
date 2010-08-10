@@ -106,14 +106,17 @@
 			{
 				options.value = getNow();
 			}
-			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
 
+			var showValue = ('showValue' in options) ? options.showValue : $.fn.timeslider.defaults.showValue;
+
+			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
 			var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
 			var $upArrow = $('<div class="timeslider-arrow timeslider-up-arrow" unselectable="on"></div>');
 			var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
 			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
 			var $input = fromInput ? $this : $('<input type="hidden" />');
+			var $showField = (fromInput || !showValue) ? $input : $('<input type="text" maxlength="5" size="5" />');
 
 			if (!fromInput)
 			{
@@ -123,7 +126,7 @@
 					$this.attr('name', '');
 				}
 				$this.after($input);
-			}			
+			}
 			if (options.name)
 			{
 				$input.attr('name', options.name);
@@ -149,7 +152,7 @@
 			$container.append($downArrow).append($sliderLine).append($upArrow);
 			$container.append($labels);
 
-			var $outmostContainer = $('<div class="timeslider-container"></div>');
+			var $outmostContainer = $('<span class="timeslider-container"></span>');
 			$outmostContainer.append($container);
 			$this.hide().after($outmostContainer);
 
@@ -165,6 +168,10 @@
 			var updateInput = function()
 			{
 				$input.val(toText(value));
+				if ($input != $showField)
+				{
+					$showField.val(toText(value));
+				}
 			};
 
 			var updateArrows = function()
@@ -339,6 +346,14 @@
 			{
 				pleaseDisable();
 			}
+			if ($input != $showField)
+			{
+				$this.after($showField);
+			}
+			if (showValue)
+			{
+				$showField.attr('readonly', 'readonly').show();
+			}
 		};
 
 		var command = null;
@@ -362,6 +377,10 @@
 		}
 
 		return this.each(make);
+	};
+
+	$.fn.timeslider.defaults = {
+		showValue: true
 	};
 
 })(jQuery);

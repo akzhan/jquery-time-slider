@@ -1,4 +1,4 @@
-div.timeslider-container, div.timeslider-arrow,
+.timeslider-container, div.timeslider-arrow,
 a.timeslider-slider, div.timeslider-slider-line, 
 div.timeslider-labels, div.timeslider-label
 {
@@ -9,11 +9,16 @@ div.timeslider-labels, div.timeslider-label
 	user-select: none;
 }
 
-div.timeslider-container
+.timeslider-container
 {
 	position: relative;
 	width: 144px;
 	min-height: 40px;
+}
+
+div.timeslider-container
+{
+	float: left;
 }
 
 div.timeslider-arrow
