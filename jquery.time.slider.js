@@ -1,6 +1,7 @@
 (function($)
 {
 	var reText = /^(\d+)\:(\d+)/;
+	var reInput = /^input|textarea$/i;
 	var DATA_CMDS = 'timeslider-commands';
 
 	var normalize = function(tm)
@@ -89,8 +90,20 @@
 			{
 				options = {};
 			}
-			var initialTime = options.value || fromText($this.text()) || getNow();
 
+			var fromInput = reInput.test(this.tagName);
+			if (!options.value && fromInput && $this.val() != '')
+			{
+				options.value = $this.val();
+			}
+			if (!options.value && !fromInput && $this.text() != '')
+			{
+				options.value = $this.text();
+			}
+			if (!options.value)
+			{
+				options.value = getNow();
+			}
 			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
 
 			var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
@@ -98,17 +111,21 @@
 			var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
 			var $slider = $('<div class="timeslider-slider" unselectable="on"></div>');
-			var $input = $('<input type="hidden" />');
-			if ($this.attr('name'))
+			var $input = fromInput ? $this : $('<input type="hidden" />');
+
+			if (!fromInput)
 			{
-				options.name = $this.attr('name');
-				$this.attr('name', '');
-			}
+				if ($this.attr('name'))
+				{
+					options.name = $this.attr('name');
+					$this.attr('name', '');
+				}
+				$this.after($input);
+			}			
 			if (options.name)
 			{
 				$input.attr('name', options.name);
 			}
-			
 
 			$sliderLine.append($slider);
 
@@ -126,7 +143,9 @@
 			$container.append($downArrow).append($sliderLine).append($upArrow);
 			$container.append($labels);
 
-			$this.empty().append($container).append($input);
+			var $outmostContainer = $('<div class="timeslider-container"></div>');
+			$outmostContainer.append($container);
+			$this.hide().after($outmostContainer);
 
 			var value = null;
 			var moving = false;
@@ -255,7 +274,7 @@
 
 			$this.data(DATA_CMDS, commands);
 
-			pleaseSet(initialTime);
+			pleaseSet(options.value);
 		};
 
 		var command = null;

@@ -12,6 +12,8 @@ div.timeslider-labels, div.timeslider-label
 div.timeslider-container
 {
 	position: relative;
+	width: 144px;
+	min-height: 40px;
 }
 
 div.timeslider-arrow
