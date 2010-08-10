@@ -5,9 +5,29 @@
 		<link rel="stylesheet" type="text/css" href="jquery.time.slider.css" />
 	</head>
 	<body>
-		<p>Time is <span id="chosen-time"></span></p>
-		<div class="timepick" value="5:00"></div>
-		<p><input type="text" class="timepick" value="5:00" /></p>
+		<h1>jQuery Time Slider</h1>
+		<p>
+		This is a demo of jQuery plugin that supports choosing of the time using dragging of slider.
+		</p>
+		<fieldset><legend>Change event listener</legend>
+			Time is <span id="chosen-time"></span>
+		</fieldset>
+		<fieldset><legend>Div to be converted into time slider</legend>
+			<div class="timepick" value="5:00"></div>
+		</fieldset>
+
+		<fieldset><legend>Input field to be converted into time slider</legend>
+			<p><input type="text" class="timepick" value="5:00" /></p>
+		</fieldset>
+
+		<fieldset><legend>Source code</legend>
+		<script src="http://gist.github.com/517176.js?file=Example-of-usage-jquery-time-slider.js"></script>
+		</fieldset>
+
+		<p>Repository: <a href="http://github.com/akzhan/jquery-time-slider">http://github.com/akzhan/jquery-time-slider</a>.</p>
+
+		Images &copy; <a href="http://maps.google.com/">Google Maps</a> team.
+
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script type="text/javascript" src="jquery.time.slider.js"></script>
 		<script type="text/javascript">
@@ -16,7 +36,7 @@
 	$('.timepick').change(function()
 	{
 		$('#chosen-time').text($(this).timeslider('get').toString());
-		}).timeslider({name: 'time', value: '12:00'});
+		}).timeslider({value: '12:00'});
 })(jQuery);			
 		</script>
 	</body>
