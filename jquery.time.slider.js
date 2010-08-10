@@ -116,7 +116,7 @@
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
 			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
 			var $input = fromInput ? $this : $('<input type="hidden" />');
-			var $showField = (fromInput || !showValue) ? $input : $('<input type="text" maxlength="5" size="5" />');
+			var $showField = fromInput ? $input : $('<input type="text" maxlength="5" size="5" />');
 
 			if (!fromInput)
 			{
@@ -326,6 +326,18 @@
 				pleaseSet(value);
 			});
 
+			var moveFocus = function(e)
+			{
+				e.preventDefault();
+				$slider.focus();
+			};
+
+			$input.focus(moveFocus);
+			if ($showField != $input)
+			{
+				$showField.focus(moveFocus);
+			}
+			
 			$slider.keydown(function(e)
 			{
 				switch(e.keyCode)
@@ -361,10 +373,11 @@
 			{
 				$this.after($showField);
 			}
-			if (showValue)
+			if (!showValue)
 			{
-				$showField.attr({readonly: 'readonly', tabindex: -1}).show();
+				$showField.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
 			}
+			$showField.attr({readonly: 'readonly', tabindex: -1}).show();
 		};
 
 		var command = null;
