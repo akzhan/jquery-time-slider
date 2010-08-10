@@ -1,5 +1,5 @@
 div.timeslider-container, div.timeslider-arrow,
-div.timeslider-slider, div.timeslider-slider-line, 
+a.timeslider-slider, div.timeslider-slider-line, 
 div.timeslider-labels, div.timeslider-label
 {
 	margin: 0;
@@ -62,7 +62,7 @@ div.timeslider-disabled div.timeslider-slider-line
 	background: url("pt_controls.png") -52px -20px;
 }
 
-div.timeslider-slider
+a.timeslider-slider
 {
 	display: none;
 	position: absolute;
@@ -73,10 +73,10 @@ div.timeslider-slider
 	cursor: pointer;
 }
 
-div.timeslider-disabled div.timeslider-slider
+div.timeslider-disabled a.timeslider-slider
 {
 	background: url("pt_controls.png") -36px -20px;
-	cursor: inherit;
+	cursor: default;
 }
 
 div.timeslider-labels

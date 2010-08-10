@@ -3,6 +3,8 @@
 	var reText = /^(\d+)\:(\d+)/;
 	var reInput = /^input|textarea$/i;
 	var DATA_CMDS = 'timeslider-commands';
+	var VK_LEFT = 37;
+	var VK_RIGHT = 39;
 
 	var normalize = function(tm)
 	{
@@ -110,7 +112,7 @@
 			var $upArrow = $('<div class="timeslider-arrow timeslider-up-arrow" unselectable="on"></div>');
 			var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
-			var $slider = $('<div class="timeslider-slider" unselectable="on"></div>');
+			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
 			var $input = fromInput ? $this : $('<input type="hidden" />');
 
 			if (!fromInput)
@@ -125,6 +127,10 @@
 			if (options.name)
 			{
 				$input.attr('name', options.name);
+			}
+			if ($input.attr('tabindex'))
+			{
+				$slider.attr('tabindex', $input.attr('tabindex'));
 			}
 
 			$sliderLine.append($slider);
@@ -300,6 +306,21 @@
 				}
 				value.setMinutes(minutes);
 				pleaseSet(value);
+			});
+
+			$slider.keydown(function(e)
+			{
+				switch(e.keyCode)
+				{
+				case VK_LEFT:
+					$downArrow.click();
+					e.preventDefault();
+					break;
+				case VK_RIGHT:
+					$upArrow.click();
+					e.preventDefault();
+					break;
+				}
 			});
 
 			var commands = {
