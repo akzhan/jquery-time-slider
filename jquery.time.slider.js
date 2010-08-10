@@ -335,6 +335,10 @@
 			$this.data(DATA_CMDS, commands);
 
 			pleaseSet(options.value);
+			if (options.disabled || (fromInput && $input.attr('disabled')))
+			{
+				pleaseDisable();
+			}
 		};
 
 		var command = null;
