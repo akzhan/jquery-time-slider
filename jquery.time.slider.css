@@ -76,6 +76,12 @@ a.timeslider-slider
 	height: 20px;
 	background: url("pt_controls.png") -36px 0px;
 	cursor: pointer;
+	text-decoration: none;
+}
+
+a.timeslider-slider:hover
+{
+	text-decoration: none;
 }
 
 div.timeslider-disabled a.timeslider-slider
