@@ -232,6 +232,8 @@
 				if (disabled)
 				{
 					$container.removeClass('timeslider-disabled');
+					$input.removeAttr('disabled');
+					$showField.removeAttr('disabled');
 					disabled = false;
 				}
 				return $this.trigger('toggled');
@@ -242,6 +244,8 @@
 				if (!disabled)
 				{
 					$container.addClass('timeslider-disabled');
+					$input.attr('disabled', 'disabled');
+					$showField.attr('disabled', 'disabled');
 					disabled = true;
 				}
 				return $this.trigger('toggled');
