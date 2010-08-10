@@ -165,6 +165,11 @@
 				$slider.show().css('left', toPixels(value) + 'px');
 			};
 
+			var updateTitle = function()
+			{
+				$sliderLine.attr('title', toText(value));
+			};
+
 			var updateInput = function()
 			{
 				$input.val(toText(value));
@@ -207,6 +212,7 @@
 				value = newValue;
 				updateInput();
 				updateSlider();
+				updateTitle();
 				updateArrows();
 				return $this.change();
 			};
