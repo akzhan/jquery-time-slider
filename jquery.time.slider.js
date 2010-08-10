@@ -363,7 +363,7 @@
 			}
 			if (showValue)
 			{
-				$showField.attr('readonly', 'readonly').show();
+				$showField.attr({readonly: 'readonly', tabindex: -1}).show();
 			}
 		};
 
