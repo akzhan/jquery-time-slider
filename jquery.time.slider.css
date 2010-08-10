@@ -18,7 +18,7 @@ div.timeslider-labels, div.timeslider-label
 
 div.timeslider-container
 {
-	float: left;
+	display: inline-block;
 }
 
 div.timeslider-arrow
