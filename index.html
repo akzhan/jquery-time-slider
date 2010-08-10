@@ -21,7 +21,7 @@
 		</fieldset>
 
 		<fieldset><legend>Actions</legend>
-			<input type="button" id="disabler" value="Disable time sliders" />
+			<input type="button" id="toggler" value="Toggle time sliders" />
 		</fieldset>
 
 		<fieldset><legend>Source code</legend>
@@ -42,7 +42,7 @@
 		$('#chosen-time').text($(this).timeslider('get').toString());
 	}).timeslider({value: '12:00'});
 
-	$('#disabler').click(function(e)
+	$('#toggler').click(function(e)
 	{
 		e.preventDefault();
 		$('.timepick').timeslider('toggle');
