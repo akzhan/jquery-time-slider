@@ -1,0 +1,82 @@
+div.timeslider-container, div.timeslider-arrow,
+div.timeslider-slider, div.timeslider-slider-line, 
+div.timeslider-labels, div.timeslider-label
+{
+	margin: 0;
+	padding: 0;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+div.timeslider-container
+{
+	position: relative;
+}
+
+div.timeslider-arrow
+{
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+	position: absolute;
+}
+
+div.timeslider-down-arrow
+{
+	left: 0;
+	background: url("pt_controls.png") -18px 0px;
+}
+
+div.timeslider-up-arrow
+{
+	left: 124px;
+	background: url("pt_controls.png") 0px 0px;
+}
+
+div.timeslider-down-arrow.timeslider-disabled
+{
+	background: url("pt_controls.png") -18px -20px;
+}
+
+div.timeslider-up-arrow.timeslider-disabled
+{
+	background: url("pt_controls.png") 0px -20px;
+}
+
+
+div.timeslider-slider-line
+{
+	position: absolute;
+	left: 18px;
+	width: 108px;
+	height: 18px;
+	background: url("pt_controls.png") -52px 0px;
+}
+
+div.timeslider-slider
+{
+	display: none;
+	position: absolute;
+	left: 0;
+	width: 16px;
+	height: 20px;
+	background: url("pt_controls.png") -36px 0px;
+	cursor: pointer;
+}
+
+div.timeslider-labels
+{
+	position: absolute;
+	top: 20px;
+	left: 18px;
+}
+
+div.timeslider-label
+{
+	position: absolute;
+	font-size: 85%;
+}
+
+
+

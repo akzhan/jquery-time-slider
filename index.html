@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ru">
+	<head>
+		<title>jQuery Time Slider</title>
+		<link rel="stylesheet" type="text/css" href="jquery.time.slider.css" />
+	</head>
+	<body>
+		Time is <span id="chosen-time"></span>
+		<div class="timepick"></div>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery.time.slider.js"></script>
+		<script type="text/javascript">
+(function($)
+{
+	$('.timepick').change(function()
+	{
+		$('#chosen-time').text($(this).timeslider('get').toString());
+		}).timeslider({name: 'time', value: '12:00'});
+})(jQuery);			
+		</script>
+	</body>
+</html>
