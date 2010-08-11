@@ -121,16 +121,19 @@
 
 	$.fn.timeslider = function(options)
 	{
-		var make = function()
+		/**
+		 * @constructor
+		 */
+		var TimeSlider = function(elt)
 		{
-			var $this = $(this);
+			var $this = $(elt);
 			if (options == null)
 			{
 				options = {};
 			}
-			options = $.extend(true, $.fn.timeslider.defaults, options);
+			options = $.extend(true, {}, $.fn.timeslider.defaults, options);
 
-			var fromInput = reInput.test(this.tagName);
+			var fromInput = reInput.test(elt.tagName);
 			if (!options.value)
 			{
 				if (fromInput && $this.val() != '')
@@ -420,23 +423,23 @@
 				}
 			});
 
-			var commands = {
-				'set': pleaseSet,
-				'get': pleaseGet,
-				'disable': pleaseDisable,
-				'enable': pleaseEnable,
-				'toggle': pleaseToggle,
-				'enabled': pleaseEnabled,
-				'stepUp': pleaseStepUp,
-				'stepDown': pleaseStepDown
-			};
+			$.extend(this, {
+				set: pleaseSet,
+				get: pleaseGet,
+				disable: pleaseDisable,
+				enable: pleaseEnable,
+				toggle: pleaseToggle,
+				enabled: pleaseEnabled,
+				stepUp: pleaseStepUp,
+				stepDown: pleaseStepDown
+			});
 
-			$this.data(DATA_CMDS, commands);
+			$this.data(DATA_CMDS, this);
 
-			pleaseSet(options.value);
+			this.set(options.value);
 			if (options.disabled || (fromInput && $input.attr('disabled')))
 			{
-				pleaseDisable();
+				this.disable();
 			}
 			if (!fromInput)
 			{
@@ -469,7 +472,10 @@
 			return retValue;
 		}
 
-		return this.each(make);
+		return this.each(function()
+		{
+			new TimeSlider(this)
+		});
 	};
 
 	$.fn.timeslider.defaults = {
