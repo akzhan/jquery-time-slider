@@ -118,7 +118,7 @@
 			});
 		}
 	};
-	
+
 	$.fn.timeslider = function(options)
 	{
 		var make = function()
@@ -272,6 +272,7 @@
 				if (!disabled)
 				{
 					$container.addClass('timeslider-disabled');
+					$slider.blur();
 					$input.attr('disabled', 'disabled');
 					disabled = true;
 				}
@@ -283,7 +284,7 @@
 				return disabled ? pleaseEnable() : pleaseDisable();
 			};
 
-			var dragger = function(e)
+			var dragAcceptor = function(e)
 			{
 				e.preventDefault();
 				if (disabled)
@@ -296,7 +297,7 @@
 			var releaser = function(e)
 			{
 				e.preventDefault();
-				$sliderLine.unbind('mousemove', dragger);
+				$sliderLine.unbind('mousemove', dragAcceptor);
 				$('body').unbind('mouseup', releaser);
 				moving = false;
 			};
@@ -309,9 +310,15 @@
 					return;
 				}
 				moving = true;
-				$sliderLine.mousemove(dragger);
+				$sliderLine.mousemove(dragAcceptor);
 				$('body').mouseup(releaser);
 			});
+
+			if (options.clickable)
+			{
+				$sliderLine.addClass('timeslider-slider-line-clickable');
+				$sliderLine.click(dragAcceptor);
+			}
 
 			var pleaseStepDown = function()
 			{
@@ -378,11 +385,15 @@
 			var focusOnSlider = function(e)
 			{
 				e.preventDefault();
+				if (disabled)
+				{
+					return;
+				}
 				$slider.focus();
 			};
 
 			$input.focus(focusOnSlider);
-			$upArrow.add($downArrow).click(focusOnSlider);
+			$upArrow.add($downArrow).add($sliderLine).click(focusOnSlider);
 
 			$slider.keydown(function(e)
 			{
@@ -453,6 +464,7 @@
 
 	$.fn.timeslider.defaults = {
 		showValue: true,
+		clickable: false,
 		holdTimeout: 100,
 		holdDelay: 3
 	};

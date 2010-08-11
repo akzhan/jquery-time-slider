@@ -67,6 +67,11 @@ div.timeslider-disabled div.timeslider-slider-line
 	background: url("pt_controls.png") -52px -20px;
 }
 
+div.timeslider-slider-line-clickable
+{
+	cursor: pointer;
+}
+
 a.timeslider-slider
 {
 	display: none;
