@@ -12,7 +12,7 @@ div.timeslider-labels, div.timeslider-label
 .timeslider-container
 {
 	position: relative;
-	width: 144px;
+	width: 146px;
 	min-height: 40px;
 }
 
@@ -37,7 +37,7 @@ div.timeslider-down-arrow
 
 div.timeslider-up-arrow
 {
-	left: 124px;
+	left: 126px;
 	background: url("pt_controls.png") 0px 0px;
 }
 
