@@ -466,7 +466,7 @@
 
 		return this.each(function()
 		{
-			new TimeSlider(this, options)
+			new TimeSlider(this, options);
 		});
 	};
 
