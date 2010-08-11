@@ -83,7 +83,7 @@
 		return  value.getHours() == 23 && value.getMinutes() == 45;
 	};
 
-	var mousehold = function(handler)
+	var mousehold = function(options, handler)
 	{
 		var $this = this;
 		var onHoldTimer = false;
@@ -92,7 +92,7 @@
 		var callHandler = function()
 		{
 			tickCount++;
-			if (tickCount != 1 && tickCount <= $.fn.timeslider.defaults.holdDelay)
+			if (tickCount != 1 && tickCount <= options.holdDelay)
 			{
 				return $this;
 			}
@@ -120,7 +120,7 @@
 			{
 				return;
 			}
-			onHoldTimer = setInterval(callHandler, $.fn.timeslider.defaults.holdTimeout);
+			onHoldTimer = setInterval(callHandler, options.holdTimeout);
 			$('body').mouseup(releaser);
 			$this.mouseout(releaser);
 		});
@@ -361,12 +361,12 @@
 				pleaseSet(value);
 			};
 
-			mousehold.call($downArrow, function()
+			mousehold.call($downArrow, options, function()
 			{
 				pleaseStepDown();
 			});
 
-			mousehold.call($upArrow, function()
+			mousehold.call($upArrow, options, function()
 			{
 				pleaseStepUp();
 			});
