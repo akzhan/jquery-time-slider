@@ -275,9 +275,8 @@
 				$('body').mouseup(releaser);
 			});
 
-			$downArrow.click(function(e)
+			var pleaseStepDown = function()
 			{
-				e.preventDefault();
 				if (disabled || isLeftEdge(value))
 				{
 					return;
@@ -295,11 +294,10 @@
 				}
 				value.setMinutes(minutes);
 				pleaseSet(value);
-			});
+			};
 
-			$upArrow.click(function(e)
+			var pleaseStepUp = function()
 			{
-				e.preventDefault();
 				if (disabled || isRightEdge(value))
 				{
 					return;
@@ -317,6 +315,18 @@
 				}
 				value.setMinutes(minutes);
 				pleaseSet(value);
+			};
+
+			$downArrow.click(function(e)
+			{
+				e.preventDefault();
+				pleaseStepDown();
+			});
+
+			$upArrow.click(function(e)
+			{
+				e.preventDefault();
+				pleaseStepUp();
 			});
 
 			$input.focus(function(e)
@@ -331,11 +341,11 @@
 				{
 				case VK_LEFT:
 					e.preventDefault();
-					$downArrow.click();
+					pleaseStepDown();
 					break;
 				case VK_RIGHT:
 					e.preventDefault();
-					$upArrow.click();
+					pleaseStepUp();
 					break;
 				}
 			});
@@ -346,7 +356,9 @@
 				'disable': pleaseDisable,
 				'enable': pleaseEnable,
 				'toggle': pleaseToggle,
-				'enabled': pleaseEnabled
+				'enabled': pleaseEnabled,
+				'stepUp': pleaseStepUp,
+				'stepDown': pleaseStepDown
 			};
 
 			$this.data(DATA_CMDS, commands);
