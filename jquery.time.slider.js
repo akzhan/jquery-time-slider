@@ -154,6 +154,7 @@
 			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
 			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
 			var $input = fromInput ? $this : $('<input type="text" maxlength="5" size="5" />');
+			var $outmostContainer = $('<span class="timeslider-container"></span>');
 
 			if (!fromInput && $this.attr('name'))
 			{
@@ -185,13 +186,13 @@
 			$container.append($downArrow).append($sliderLine).append($upArrow);
 			$container.append($labels);
 
-			var $outmostContainer = $('<span class="timeslider-container"></span>');
 			$outmostContainer.append($container);
 			$this.hide().after($outmostContainer);
 
 			var value = null;
 			var moving = false;
 			var disabled = false;
+			var activeSliderTabIndex = null;
 
 			var updateSlider = function()
 			{
@@ -262,6 +263,14 @@
 				{
 					$container.removeClass('timeslider-disabled');
 					$input.removeAttr('disabled');
+					if (activeSliderTabIndex)
+					{
+						$slider.attr('tabindex', activeSliderTabIndex);
+					}
+					else
+					{
+						$slider.removeAttr('tabindex');
+					}
 					disabled = false;
 				}
 				return $this.trigger('toggled');
@@ -272,7 +281,8 @@
 				if (!disabled)
 				{
 					$container.addClass('timeslider-disabled');
-					$slider.blur();
+					activeSliderTabIndex = $slider.attr('tabindex');
+					$slider.attr('tabindex', -1).blur();
 					$input.attr('disabled', 'disabled');
 					disabled = true;
 				}
