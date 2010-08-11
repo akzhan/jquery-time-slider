@@ -119,327 +119,327 @@
 		}
 	};
 
-	$.fn.timeslider = function(options)
+	/**
+	 * @constructor
+	 */
+	var TimeSlider = function(elt, options)
 	{
-		/**
-		 * @constructor
-		 */
-		var TimeSlider = function(elt)
+		var $this = $(elt);
+		if (options == null)
 		{
-			var $this = $(elt);
-			if (options == null)
+			options = {};
+		}
+		options = $.extend(true, {}, $.fn.timeslider.defaults, options);
+
+		var fromInput = reInput.test(elt.tagName);
+		if (!options.value)
+		{
+			if (fromInput && $this.val() != '')
 			{
-				options = {};
+				options.value = $this.val();
 			}
-			options = $.extend(true, {}, $.fn.timeslider.defaults, options);
-
-			var fromInput = reInput.test(elt.tagName);
-			if (!options.value)
+			else if (!fromInput && $this.text() != '')
 			{
-				if (fromInput && $this.val() != '')
-				{
-					options.value = $this.val();
-				}
-				else if (!fromInput && $this.text() != '')
-				{
-					options.value = $this.text();
-				}
-				else
-				{
-					options.value = utils.getNow();
-				}
+				options.value = $this.text();
 			}
-
-			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
-			var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
-			var $upArrow = $('<div class="timeslider-arrow timeslider-up-arrow" unselectable="on"></div>');
-			var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
-			var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
-			var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
-			var $input = fromInput ? $this : $('<input type="text" maxlength="5" size="5" />');
-			var $outmostContainer = $('<span class="timeslider-container"></span>');
-
-			if (!fromInput && $this.attr('name'))
+			else
 			{
-				options.name = $this.attr('name');
-				$this.attr('name', '');
+				options.value = utils.getNow();
 			}
-			if (options.name)
-			{
-				$input.attr('name', options.name);
-			}
-			if ($input.attr('tabindex'))
-			{
-				$slider.attr('tabindex', $input.attr('tabindex'));
-			}
+		}
 
-			$sliderLine.append($slider);
+		var $container = $('<div class="timeslider-container" unselectable="on"></div>');
+		var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
+		var $upArrow = $('<div class="timeslider-arrow timeslider-up-arrow" unselectable="on"></div>');
+		var $sliderLine = $('<div class="timeslider-slider-line" unselectable="on"></div>');
+		var $labels = $('<div class="timeslider-labels" unselectable="on"></div>');
+		var $slider = $('<a class="timeslider-slider" unselectable="on" href="javascript:;">&nbsp;</a>');
+		var $input = fromInput ? $this : $('<input type="text" maxlength="5" size="5" />');
+		var $outmostContainer = $('<span class="timeslider-container"></span>');
 
-			var addLabelFor = function(hours)
-			{
-				var div = $('<div class="timeslider-label">' + hours.toString() + '</div>');
-				div.css('left', utils.toPixels(utils.fromHour(hours)) + 'px');
-				$labels.append(div);
-			};
+		if (!fromInput && $this.attr('name'))
+		{
+			options.name = $this.attr('name');
+			$this.attr('name', '');
+		}
+		if (options.name)
+		{
+			$input.attr('name', options.name);
+		}
+		if ($input.attr('tabindex'))
+		{
+			$slider.attr('tabindex', $input.attr('tabindex'));
+		}
 
-			addLabelFor(5);
-			addLabelFor(12);
-			addLabelFor(20);
+		$sliderLine.append($slider);
 
-			$container.append($downArrow).append($sliderLine).append($upArrow);
-			$container.append($labels);
-
-			$outmostContainer.append($container);
-			$this.hide().after($outmostContainer);
-
-			var value = null;
-			var moving = false;
-			var disabled = false;
-			var activeSliderTabIndex = null;
-
-			var updateSlider = function()
-			{
-				$slider.show().css('left', utils.toPixels(value) + 'px');
-			};
-
-			var updateTitle = function()
-			{
-				$sliderLine.attr('title', utils.toText(value));
-			};
-
-			var updateInput = function()
-			{
-				$input.val(utils.toText(value));
-			};
-
-			var updateArrows = function()
-			{
-				if (utils.isLeftEdge(value))
-				{
-					$downArrow.addClass('timeslider-disabled');
-				}
-				else
-				{
-					$downArrow.removeClass('timeslider-disabled');
-				}
-				if (utils.isRightEdge(value))
-				{
-					$upArrow.addClass('timeslider-disabled');
-				}
-				else
-				{
-					$upArrow.removeClass('timeslider-disabled');
-				}
-			};
-
-			var pleaseSet = function(newValue)
-			{
-				if ('string' == typeof newValue)
-				{
-					newValue = utils.fromText(newValue);
-				}
-				else
-				{
-					newValue = utils.normalize(newValue);
-				}
-				value = newValue;
-				updateInput();
-				updateSlider();
-				updateTitle();
-				updateArrows();
-				return $this.change();
-			};
-
-			var pleaseEnable = function()
-			{
-				if (disabled)
-				{
-					$container.removeClass('timeslider-disabled');
-					$input.removeAttr('disabled');
-					if (activeSliderTabIndex)
-					{
-						$slider.attr('tabindex', activeSliderTabIndex);
-					}
-					else
-					{
-						$slider.removeAttr('tabindex');
-					}
-					disabled = false;
-				}
-				return $this.trigger('toggled');
-			};
-
-			var pleaseDisable = function()
-			{
-				if (!disabled)
-				{
-					$container.addClass('timeslider-disabled');
-					activeSliderTabIndex = $slider.attr('tabindex');
-					$slider.attr('tabindex', -1).blur();
-					$input.attr('disabled', 'disabled');
-					disabled = true;
-				}
-				return $this.trigger('toggled');
-			};
-
-			var dragAcceptor = function(e)
-			{
-				e.preventDefault();
-				if (disabled)
-				{
-					return;
-				}
-				pleaseSet(utils.fromPixels(e.pageX - $sliderLine.offset().left));
-			};
-
-			var releaser = function(e)
-			{
-				e.preventDefault();
-				$sliderLine.unbind('mousemove', dragAcceptor);
-				$('body').unbind('mouseup', releaser);
-				moving = false;
-			};
-
-			$slider.mousedown(function(e)
-			{
-				e.preventDefault();
-				if (moving || disabled)
-				{
-					return;
-				}
-				moving = true;
-				$sliderLine.mousemove(dragAcceptor);
-				$('body').mouseup(releaser);
-			});
-
-			if (options.clickable)
-			{
-				$sliderLine.addClass('timeslider-slider-line-clickable');
-				$sliderLine.click(dragAcceptor);
-			}
-
-			var pleaseStepDown = function()
-			{
-				if (utils.isLeftEdge(value))
-				{
-					return;
-				}
-				var hours = value.getHours();
-				var minutes = value.getMinutes();
-				if (minutes == 0)
-				{
-					minutes = 45;
-					value.setHours(hours - 1);
-				}
-				else
-				{
-					minutes -= 15;
-				}
-				value.setMinutes(minutes);
-				pleaseSet(value);
-			};
-
-			var pleaseStepUp = function()
-			{
-				if (utils.isRightEdge(value))
-				{
-					return;
-				}
-				var hours = value.getHours();
-				var minutes = value.getMinutes();
-				if (minutes == 45)
-				{
-					minutes = 0;
-					value.setHours(hours + 1);
-				}
-				else
-				{
-					minutes += 15;
-				}
-				value.setMinutes(minutes);
-				pleaseSet(value);
-			};
-
-			var stepDownThroughControl = function()
-			{
-				if (disabled)
-				{
-					return;
-				}
-				pleaseStepDown();
-			};
-
-			var stepUpThroughControl = function()
-			{
-				if (disabled)
-				{
-					return;
-				}
-				pleaseStepUp();
-			};
-			utils.mousehold.call($downArrow, options, stepDownThroughControl);
-			utils.mousehold.call($upArrow, options, stepUpThroughControl);
-
-			var focusOnSlider = function(e)
-			{
-				e.preventDefault();
-				if (disabled)
-				{
-					return;
-				}
-				$slider.focus();
-			};
-
-			$input.focus(focusOnSlider);
-			$upArrow.add($downArrow).add($sliderLine).click(focusOnSlider);
-
-			$slider.keydown(function(e)
-			{
-				switch(e.keyCode)
-				{
-				case VK_LEFT:
-					e.preventDefault();
-					stepDownThroughControl();
-					break;
-				case VK_RIGHT:
-					e.preventDefault();
-					stepUpThroughControl();
-					break;
-				}
-			});
-
-			$.extend(this, {
-				set: pleaseSet,
-				get: function() { return value; },
-				disable: pleaseDisable,
-				enable: pleaseEnable,
-				toggle: function()
-				{
-					return disabled ? this.enable() : this.disable();
-				},
-				enabled: function() { return !disabled; },
-				stepUp: pleaseStepUp,
-				stepDown: pleaseStepDown
-			});
-
-			$this.data(DATA_CMDS, this);
-
-			this.set(options.value);
-			if (options.disabled || (fromInput && $input.attr('disabled')))
-			{
-				this.disable();
-			}
-			if (!fromInput)
-			{
-				$this.after($input);
-			}
-			if (!options.showValue)
-			{
-				$input.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
-			}
-			$input.attr({readonly: 'readonly', tabindex: -1}).show();
+		var addLabelFor = function(hours)
+		{
+			var div = $('<div class="timeslider-label">' + hours.toString() + '</div>');
+			div.css('left', utils.toPixels(utils.fromHour(hours)) + 'px');
+			$labels.append(div);
 		};
 
+		addLabelFor(5);
+		addLabelFor(12);
+		addLabelFor(20);
+
+		$container.append($downArrow).append($sliderLine).append($upArrow);
+		$container.append($labels);
+
+		$outmostContainer.append($container);
+		$this.hide().after($outmostContainer);
+
+		var value = null;
+		var moving = false;
+		var disabled = false;
+		var activeSliderTabIndex = null;
+
+		var updateSlider = function()
+		{
+			$slider.show().css('left', utils.toPixels(value) + 'px');
+		};
+
+		var updateTitle = function()
+		{
+			$sliderLine.attr('title', utils.toText(value));
+		};
+
+		var updateInput = function()
+		{
+			$input.val(utils.toText(value));
+		};
+
+		var updateArrows = function()
+		{
+			if (utils.isLeftEdge(value))
+			{
+				$downArrow.addClass('timeslider-disabled');
+			}
+			else
+			{
+				$downArrow.removeClass('timeslider-disabled');
+			}
+			if (utils.isRightEdge(value))
+			{
+				$upArrow.addClass('timeslider-disabled');
+			}
+			else
+			{
+				$upArrow.removeClass('timeslider-disabled');
+			}
+		};
+
+		var pleaseSet = function(newValue)
+		{
+			if ('string' == typeof newValue)
+			{
+				newValue = utils.fromText(newValue);
+			}
+			else
+			{
+				newValue = utils.normalize(newValue);
+			}
+			value = newValue;
+			updateInput();
+			updateSlider();
+			updateTitle();
+			updateArrows();
+			return $this.change();
+		};
+
+		var pleaseEnable = function()
+		{
+			if (disabled)
+			{
+				$container.removeClass('timeslider-disabled');
+				$input.removeAttr('disabled');
+				if (activeSliderTabIndex)
+				{
+					$slider.attr('tabindex', activeSliderTabIndex);
+				}
+				else
+				{
+					$slider.removeAttr('tabindex');
+				}
+				disabled = false;
+			}
+			return $this.trigger('toggled');
+		};
+
+		var pleaseDisable = function()
+		{
+			if (!disabled)
+			{
+				$container.addClass('timeslider-disabled');
+				activeSliderTabIndex = $slider.attr('tabindex');
+				$slider.attr('tabindex', -1).blur();
+				$input.attr('disabled', 'disabled');
+				disabled = true;
+			}
+			return $this.trigger('toggled');
+		};
+
+		var dragAcceptor = function(e)
+		{
+			e.preventDefault();
+			if (disabled)
+			{
+				return;
+			}
+			pleaseSet(utils.fromPixels(e.pageX - $sliderLine.offset().left));
+		};
+
+		var releaser = function(e)
+		{
+			e.preventDefault();
+			$sliderLine.unbind('mousemove', dragAcceptor);
+			$('body').unbind('mouseup', releaser);
+			moving = false;
+		};
+
+		$slider.mousedown(function(e)
+		{
+			e.preventDefault();
+			if (moving || disabled)
+			{
+				return;
+			}
+			moving = true;
+			$sliderLine.mousemove(dragAcceptor);
+			$('body').mouseup(releaser);
+		});
+
+		if (options.clickable)
+		{
+			$sliderLine.addClass('timeslider-slider-line-clickable');
+			$sliderLine.click(dragAcceptor);
+		}
+
+		var pleaseStepDown = function()
+		{
+			if (utils.isLeftEdge(value))
+			{
+				return;
+			}
+			var hours = value.getHours();
+			var minutes = value.getMinutes();
+			if (minutes == 0)
+			{
+				minutes = 45;
+				value.setHours(hours - 1);
+			}
+			else
+			{
+				minutes -= 15;
+			}
+			value.setMinutes(minutes);
+			pleaseSet(value);
+		};
+
+		var pleaseStepUp = function()
+		{
+			if (utils.isRightEdge(value))
+			{
+				return;
+			}
+			var hours = value.getHours();
+			var minutes = value.getMinutes();
+			if (minutes == 45)
+			{
+				minutes = 0;
+				value.setHours(hours + 1);
+			}
+			else
+			{
+				minutes += 15;
+			}
+			value.setMinutes(minutes);
+			pleaseSet(value);
+		};
+
+		var stepDownThroughControl = function()
+		{
+			if (disabled)
+			{
+				return;
+			}
+			pleaseStepDown();
+		};
+
+		var stepUpThroughControl = function()
+		{
+			if (disabled)
+			{
+				return;
+			}
+			pleaseStepUp();
+		};
+		utils.mousehold.call($downArrow, options, stepDownThroughControl);
+		utils.mousehold.call($upArrow, options, stepUpThroughControl);
+
+		var focusOnSlider = function(e)
+		{
+			e.preventDefault();
+			if (disabled)
+			{
+				return;
+			}
+			$slider.focus();
+		};
+
+		$input.focus(focusOnSlider);
+		$upArrow.add($downArrow).add($sliderLine).click(focusOnSlider);
+
+		$slider.keydown(function(e)
+		{
+			switch(e.keyCode)
+			{
+			case VK_LEFT:
+				e.preventDefault();
+				stepDownThroughControl();
+				break;
+			case VK_RIGHT:
+				e.preventDefault();
+				stepUpThroughControl();
+				break;
+			}
+		});
+
+		$.extend(this, {
+			set: pleaseSet,
+			get: function() { return value; },
+			disable: pleaseDisable,
+			enable: pleaseEnable,
+			toggle: function()
+			{
+				return disabled ? this.enable() : this.disable();
+			},
+			enabled: function() { return !disabled; },
+			stepUp: pleaseStepUp,
+			stepDown: pleaseStepDown
+		});
+
+		$this.data(DATA_CMDS, this);
+
+		this.set(options.value);
+		if (options.disabled || (fromInput && $input.attr('disabled')))
+		{
+			this.disable();
+		}
+		if (!fromInput)
+		{
+			$this.after($input);
+		}
+		if (!options.showValue)
+		{
+			$input.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
+		}
+		$input.attr({readonly: 'readonly', tabindex: -1}).show();
+	};
+
+	$.fn.timeslider = function(options)
+	{
 		var command = null;
 
 		var follow = function()
@@ -463,7 +463,7 @@
 
 		return this.each(function()
 		{
-			new TimeSlider(this)
+			new TimeSlider(this, options)
 		});
 	};
 
