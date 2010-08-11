@@ -317,7 +317,7 @@
 
 			var pleaseStepDown = function()
 			{
-				if (disabled || utils.isLeftEdge(value))
+				if (utils.isLeftEdge(value))
 				{
 					return;
 				}
@@ -338,7 +338,7 @@
 
 			var pleaseStepUp = function()
 			{
-				if (disabled || utils.isRightEdge(value))
+				if (utils.isRightEdge(value))
 				{
 					return;
 				}
@@ -357,8 +357,25 @@
 				pleaseSet(value);
 			};
 
-			utils.mousehold.call($downArrow, options, pleaseStepDown);
-			utils.mousehold.call($upArrow, options, pleaseStepUp);
+			var stepDownThroughControl = function()
+			{
+				if (disabled)
+				{
+					return;
+				}
+				pleaseStepDown();
+			};
+
+			var stepUpThroughControl = function()
+			{
+				if (disabled)
+				{
+					return;
+				}
+				pleaseStepUp();
+			};
+			utils.mousehold.call($downArrow, options, stepDownThroughControl);
+			utils.mousehold.call($upArrow, options, stepUpThroughControl);
 
 			$input.focus(function(e)
 			{
@@ -372,11 +389,11 @@
 				{
 				case VK_LEFT:
 					e.preventDefault();
-					pleaseStepDown();
+					stepDownThroughControl();
 					break;
 				case VK_RIGHT:
 					e.preventDefault();
-					pleaseStepUp();
+					stepUpThroughControl();
 					break;
 				}
 			});
