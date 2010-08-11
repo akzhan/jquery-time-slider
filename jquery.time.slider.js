@@ -2,7 +2,7 @@
 {
 	var reText = /^(\d+)\:(\d+)/;
 	var reInput = /^input|textarea$/i;
-	var DATA_CMDS = 'timeslider-commands';
+	var DATA_KEY = 'timeslider-object';
 	var VK_LEFT = 37;
 	var VK_RIGHT = 39;
 
@@ -416,7 +416,7 @@
 			stepDown: pleaseStepDown
 		});
 
-		$this.data(DATA_CMDS, this);
+		$this.data(DATA_KEY, this);
 
 		this.set(options.value);
 		if (options.disabled || (fromInput && $input.attr('disabled')))
@@ -447,8 +447,7 @@
 
 		var follow = function()
 		{
-			var $this = $(this);
-			var timeslider = $this.data(DATA_CMDS);
+			var timeslider = $.data(this, DATA_KEY);
 			return timeslider[command].call(timeslider, options);
 		};
 
