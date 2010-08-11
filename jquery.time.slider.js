@@ -411,10 +411,6 @@
 			get: function() { return value; },
 			disable: pleaseDisable,
 			enable: pleaseEnable,
-			toggle: function()
-			{
-				return disabled ? this.enable() : this.disable();
-			},
 			enabled: function() { return !disabled; },
 			stepUp: pleaseStepUp,
 			stepDown: pleaseStepDown
@@ -437,6 +433,13 @@
 		}
 		$input.attr({readonly: 'readonly', tabindex: -1}).show();
 	};
+
+	$.extend(TimeSlider.prototype, {
+		toggle: function()
+		{
+			return this.enabled() ? this.disable() : this.enable();
+		}
+	});
 
 	$.fn.timeslider = function(options)
 	{
