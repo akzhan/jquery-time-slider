@@ -26,6 +26,7 @@
 
 		<fieldset><legend>Actions</legend>
 			<input type="button" id="toggler" value="Toggle time sliders" />
+			<div id="chain-test"></div>
 		</fieldset>
 
 		<fieldset><legend>Source code</legend>
@@ -49,7 +50,8 @@
 	$('#toggler').click(function(e)
 	{
 		e.preventDefault();
-		$('.timepick,.timepick2').timeslider('toggle');
+		$('.timepick,.timepick2').timeslider('toggle').addClass('chain-ok');
+		$('#chain-test').text($('.timepick,.timepick2').not('.chain-ok').size() > 0 ? 'chain test failed' : 'chain test passed');
 	});
 
 	$('.timepick2').timeslider({ showValue: false, clickable: true });
