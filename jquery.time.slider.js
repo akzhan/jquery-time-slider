@@ -3,6 +3,7 @@
 	var reText = /^(\d+)\:(\d+)/;
 	var reInput = /^input|textarea$/i;
 	var DATA_KEY = 'timeslider-object';
+	var KEEP_CHAIN = { keepChain: true };
 	var VK_LEFT = 37;
 	var VK_RIGHT = 39;
 
@@ -245,7 +246,8 @@
 			updateSlider();
 			updateTitle();
 			updateArrows();
-			return $this.change();
+			$this.change();
+			return KEEP_CHAIN;
 		};
 
 		var pleaseEnable = function()
@@ -264,7 +266,8 @@
 				}
 				disabled = false;
 			}
-			return $this.trigger('toggled');
+			$this.trigger('toggled');
+			return KEEP_CHAIN;
 		};
 
 		var pleaseDisable = function()
@@ -277,7 +280,8 @@
 				$input.attr('disabled', 'disabled');
 				disabled = true;
 			}
-			return $this.trigger('toggled');
+			$this.trigger('toggled');
+			return KEEP_CHAIN;
 		};
 
 		var dragAcceptor = function(e)
@@ -334,7 +338,7 @@
 				minutes -= 15;
 			}
 			value.setMinutes(minutes);
-			pleaseSet(value);
+			return pleaseSet(value);
 		};
 
 		var pleaseStepUp = function()
@@ -355,7 +359,7 @@
 				minutes += 15;
 			}
 			value.setMinutes(minutes);
-			pleaseSet(value);
+			return pleaseSet(value);
 		};
 
 		var stepDownThroughControl = function()
@@ -375,6 +379,7 @@
 			}
 			pleaseStepUp();
 		};
+
 		utils.mousehold.call($downArrow, options, stepDownThroughControl);
 		utils.mousehold.call($upArrow, options, stepUpThroughControl);
 
@@ -460,7 +465,7 @@
 			{
 				retValue = follow.call(this);
 			});
-			return retValue;
+			return (retValue == KEEP_CHAIN) ? this : retValue;
 		}
 
 		return this.each(function()
