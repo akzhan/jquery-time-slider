@@ -147,8 +147,6 @@
 				}
 			}
 
-			var showValue = options.showValue;
-
 			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
 			var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
 			var $upArrow = $('<div class="timeslider-arrow timeslider-up-arrow" unselectable="on"></div>');
@@ -420,7 +418,7 @@
 			{
 				$this.after($input);
 			}
-			if (!showValue)
+			if (!options.showValue)
 			{
 				$input.css({position: 'absolute', left: -5000, width: 1, height: 1, padding: 0, margin: 0});
 			}
