@@ -250,16 +250,6 @@
 				return $this.change();
 			};
 
-			var pleaseGet = function()
-			{
-				return value;
-			};
-
-			var pleaseEnabled = function()
-			{
-				return !disabled;
-			};
-
 			var pleaseEnable = function()
 			{
 				if (disabled)
@@ -290,11 +280,6 @@
 					disabled = true;
 				}
 				return $this.trigger('toggled');
-			};
-
-			var pleaseToggle = function()
-			{
-				return disabled ? pleaseEnable() : pleaseDisable();
 			};
 
 			var dragAcceptor = function(e)
@@ -425,11 +410,14 @@
 
 			$.extend(this, {
 				set: pleaseSet,
-				get: pleaseGet,
+				get: function() { return value; },
 				disable: pleaseDisable,
 				enable: pleaseEnable,
-				toggle: pleaseToggle,
-				enabled: pleaseEnabled,
+				toggle: function()
+				{
+					return disabled ? this.enable() : this.disable();
+				},
+				enabled: function() { return !disabled; },
 				stepUp: pleaseStepUp,
 				stepDown: pleaseStepDown
 			});
@@ -457,7 +445,8 @@
 		var follow = function()
 		{
 			var $this = $(this);
-			return $this.data(DATA_CMDS)[command].call($this, options);
+			var timeslider = $this.data(DATA_CMDS);
+			return timeslider[command].call(timeslider, options);
 		};
 
 		if ('string' == typeof options)
