@@ -6,126 +6,119 @@
 	var VK_LEFT = 37;
 	var VK_RIGHT = 39;
 
-	var normalize = function(tm)
-	{
-		tm.setSeconds(0);
-		tm.setMilliseconds(0);
-		var minutes = tm.getMinutes();
-		minutes = Math.floor((minutes + 14) / 15) * 15;
-		tm.setMinutes(minutes);
-		return tm;
-	};
-
-	var getNow = function()
-	{
-		return normalize(new Date());
-	};
-
-	var fromText = function(text)
-	{
-		var r = new Date();
-		var m = text.match(reText);
-		if (m != null)
+	var utils = {
+		normalize: function(tm)
 		{
-			r.setHours(parseInt(m[1]));
-			r.setMinutes(parseInt(m[2]));
-		}
-		return normalize(r);
-	};
-
-	var toText = function(tm)
-	{
-		var minutes = tm.getMinutes().toString();
-		if (minutes.length < 2)
+			tm.setSeconds(0);
+			tm.setMilliseconds(0);
+			var minutes = tm.getMinutes();
+			minutes = Math.floor((minutes + 14) / 15) * 15;
+			tm.setMinutes(minutes);
+			return tm;
+		},
+		getNow: function()
 		{
-			minutes = '0' + minutes;
-		}
-		return tm.getHours().toString() + ':' + minutes;
-	};
-
-	var fromHour = function(hours)
-	{
-		var r = new Date();
-		r.setHours(hours);
-		r.setMinutes(0);
-		return normalize(r);
-	};
-
-	var toPixels = function(tm)
-	{
-		var hm = tm.getMinutes() / 15 + tm.getHours() * 4;
-		return hm;
-	};
-
-	var fromPixels = function(x)
-	{
-		var r = getNow();
-		var minutes = x * 15;
-		var hours = Math.floor(minutes / 60);
-		minutes = minutes % 60;
-		if (hours > 23)
+			return utils.normalize(new Date());
+		},
+		fromText: function(text)
 		{
-			hours = 23;
-			minutes = 45;
-		}
-		r.setHours(hours);
-		r.setMinutes(minutes);
-		return r;
-	};
-
-	var isLeftEdge = function(value)
-	{
-		return  value.getHours() == 0 && value.getMinutes() == 0;
-	};
-
-	var isRightEdge = function(value)
-	{
-		return  value.getHours() == 23 && value.getMinutes() == 45;
-	};
-
-	var mousehold = function(options, handler)
-	{
-		var $this = this;
-		var onHoldTimer = false;
-		var tickCount = 0;
-
-		var callHandler = function()
-		{
-			tickCount++;
-			if (tickCount != 1 && tickCount <= options.holdDelay)
+			var r = new Date();
+			var m = text.match(reText);
+			if (m != null)
 			{
-				return $this;
+				r.setHours(parseInt(m[1]));
+				r.setMinutes(parseInt(m[2]));
 			}
-			return $this.each(function()
+			return utils.normalize(r);
+		},
+		toText: function(tm)
+		{
+			var minutes = tm.getMinutes().toString();
+			if (minutes.length < 2)
 			{
-				handler.call(this);
+				minutes = '0' + minutes;
+			}
+			return tm.getHours().toString() + ':' + minutes;
+		},
+		fromHour: function(hours)
+		{
+			var r = new Date();
+			r.setHours(hours);
+			r.setMinutes(0);
+			return utils.normalize(r);
+		},
+		toPixels: function(tm)
+		{
+			var hm = tm.getMinutes() / 15 + tm.getHours() * 4;
+			return hm;
+		},
+		fromPixels: function(x)
+		{
+			var r = utils.getNow();
+			var minutes = x * 15;
+			var hours = Math.floor(minutes / 60);
+			minutes = minutes % 60;
+			if (hours > 23)
+			{
+				hours = 23;
+				minutes = 45;
+			}
+			r.setHours(hours);
+			r.setMinutes(minutes);
+			return r;
+		},
+		isLeftEdge: function(value)
+		{
+			return  value.getHours() == 0 && value.getMinutes() == 0;
+		},
+		isRightEdge: function(value)
+		{
+			return  value.getHours() == 23 && value.getMinutes() == 45;
+		},
+		mousehold: function(options, handler)
+		{
+			var $this = this;
+			var onHoldTimer = false;
+			var tickCount = 0;
+
+			var callHandler = function()
+			{
+				tickCount++;
+				if (tickCount != 1 && tickCount <= options.holdDelay)
+				{
+					return $this;
+				}
+				return $this.each(function()
+				{
+					handler.call(this);
+				});
+			};
+
+			var releaser = function(e)
+			{
+				e.preventDefault();
+				clearInterval(onHoldTimer);
+				$('body').unbind('mouseup', releaser);
+				$this.unbind('mouseout', releaser);
+				onHoldTimer = false;
+				tickCount = 0;
+			};
+
+			$this.mousedown(function(e)
+			{
+				e.preventDefault();
+				callHandler();
+				if (onHoldTimer)
+				{
+					return;
+				}
+				onHoldTimer = setInterval(callHandler, options.holdTimeout);
+				$('body').mouseup(releaser);
+				$this.mouseout(releaser);
 			});
-		};
-
-		var releaser = function(e)
-		{
-			e.preventDefault();
-			clearInterval(onHoldTimer);
-			$('body').unbind('mouseup', releaser);
-			$this.unbind('mouseout', releaser);
-			onHoldTimer = false;
-			tickCount = 0;
-		};
-
-		$this.mousedown(function(e)
-		{
-			e.preventDefault();
-			callHandler();
-			if (onHoldTimer)
-			{
-				return;
-			}
-			onHoldTimer = setInterval(callHandler, options.holdTimeout);
-			$('body').mouseup(releaser);
-			$this.mouseout(releaser);
-		});
+		}
 	};
-
+	
 	$.fn.timeslider = function(options)
 	{
 		var make = function()
@@ -138,17 +131,20 @@
 			options = $.extend(true, $.fn.timeslider.defaults, options);
 
 			var fromInput = reInput.test(this.tagName);
-			if (!options.value && fromInput && $this.val() != '')
-			{
-				options.value = $this.val();
-			}
-			if (!options.value && !fromInput && $this.text() != '')
-			{
-				options.value = $this.text();
-			}
 			if (!options.value)
 			{
-				options.value = getNow();
+				if (fromInput && $this.val() != '')
+				{
+					options.value = $this.val();
+				}
+				else if (!fromInput && $this.text() != '')
+				{
+					options.value = $this.text();
+				}
+				else
+				{
+					options.value = utils.getNow();
+				}
 			}
 
 			var showValue = options.showValue;
@@ -180,7 +176,7 @@
 			var addLabelFor = function(hours)
 			{
 				var div = $('<div class="timeslider-label">' + hours.toString() + '</div>');
-				div.css('left', toPixels(fromHour(hours)) + 'px');
+				div.css('left', utils.toPixels(utils.fromHour(hours)) + 'px');
 				$labels.append(div);
 			};
 
@@ -201,22 +197,22 @@
 
 			var updateSlider = function()
 			{
-				$slider.show().css('left', toPixels(value) + 'px');
+				$slider.show().css('left', utils.toPixels(value) + 'px');
 			};
 
 			var updateTitle = function()
 			{
-				$sliderLine.attr('title', toText(value));
+				$sliderLine.attr('title', utils.toText(value));
 			};
 
 			var updateInput = function()
 			{
-				$input.val(toText(value));
+				$input.val(utils.toText(value));
 			};
 
 			var updateArrows = function()
 			{
-				if (isLeftEdge(value))
+				if (utils.isLeftEdge(value))
 				{
 					$downArrow.addClass('timeslider-disabled');
 				}
@@ -224,7 +220,7 @@
 				{
 					$downArrow.removeClass('timeslider-disabled');
 				}
-				if (isRightEdge(value))
+				if (utils.isRightEdge(value))
 				{
 					$upArrow.addClass('timeslider-disabled');
 				}
@@ -238,11 +234,11 @@
 			{
 				if ('string' == typeof newValue)
 				{
-					newValue = fromText(newValue);
+					newValue = utils.fromText(newValue);
 				}
 				else
 				{
-					newValue = normalize(newValue);
+					newValue = utils.normalize(newValue);
 				}
 				value = newValue;
 				updateInput();
@@ -296,7 +292,7 @@
 				{
 					return;
 				}
-				pleaseSet(fromPixels(e.pageX - $sliderLine.offset().left ));
+				pleaseSet(utils.fromPixels(e.pageX - $sliderLine.offset().left));
 			};
 
 			var releaser = function(e)
@@ -321,7 +317,7 @@
 
 			var pleaseStepDown = function()
 			{
-				if (disabled || isLeftEdge(value))
+				if (disabled || utils.isLeftEdge(value))
 				{
 					return;
 				}
@@ -342,7 +338,7 @@
 
 			var pleaseStepUp = function()
 			{
-				if (disabled || isRightEdge(value))
+				if (disabled || utils.isRightEdge(value))
 				{
 					return;
 				}
@@ -361,8 +357,8 @@
 				pleaseSet(value);
 			};
 
-			mousehold.call($downArrow, options, pleaseStepDown);
-			mousehold.call($upArrow, options, pleaseStepUp);
+			utils.mousehold.call($downArrow, options, pleaseStepDown);
+			utils.mousehold.call($upArrow, options, pleaseStepUp);
 
 			$input.focus(function(e)
 			{
