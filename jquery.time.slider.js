@@ -375,11 +375,14 @@
 			utils.mousehold.call($downArrow, options, stepDownThroughControl);
 			utils.mousehold.call($upArrow, options, stepUpThroughControl);
 
-			$input.focus(function(e)
+			var focusOnSlider = function(e)
 			{
 				e.preventDefault();
 				$slider.focus();
-			});
+			};
+
+			$input.focus(focusOnSlider);
+			$upArrow.add($downArrow).click(focusOnSlider);
 
 			$slider.keydown(function(e)
 			{
