@@ -83,6 +83,49 @@
 		return  value.getHours() == 23 && value.getMinutes() == 45;
 	};
 
+	var mousehold = function(handler)
+	{
+		var $this = this;
+		var onHoldTimer = false;
+		var tickCount = 0;
+
+		var callHandler = function()
+		{
+			tickCount++;
+			if (tickCount != 1 && tickCount <= $.fn.timeslider.defaults.holdDelay)
+			{
+				return $this;
+			}
+			return $this.each(function()
+			{
+				handler.call(this);
+			});
+		};
+
+		var releaser = function(e)
+		{
+			e.preventDefault();
+			clearInterval(onHoldTimer);
+			$('body').unbind('mouseup', releaser);
+			$this.unbind('mouseout', releaser);
+			onHoldTimer = false;
+			tickCount = 0;
+		};
+
+		$this.mousedown(function(e)
+		{
+			e.preventDefault();
+			callHandler();
+			if (onHoldTimer)
+			{
+				return;
+			}
+			onHoldTimer = setInterval(callHandler, $.fn.timeslider.defaults.holdTimeout);
+			$('body').mouseup(releaser);
+			$this.mouseout(releaser);
+		});
+	};
+
 	$.fn.timeslider = function(options)
 	{
 		var make = function()
@@ -92,6 +135,7 @@
 			{
 				options = {};
 			}
+			options = $.extend(true, $.fn.timeslider.defaults, options);
 
 			var fromInput = reInput.test(this.tagName);
 			if (!options.value && fromInput && $this.val() != '')
@@ -107,7 +151,7 @@
 				options.value = getNow();
 			}
 
-			var showValue = ('showValue' in options) ? options.showValue : $.fn.timeslider.defaults.showValue;
+			var showValue = options.showValue;
 
 			var $container = $('<div class="timeslider-container" unselectable="on"></div>');
 			var $downArrow = $('<div class="timeslider-arrow timeslider-down-arrow" unselectable="on"></div>');
@@ -317,15 +361,13 @@
 				pleaseSet(value);
 			};
 
-			$downArrow.click(function(e)
+			mousehold.call($downArrow, function()
 			{
-				e.preventDefault();
 				pleaseStepDown();
 			});
 
-			$upArrow.click(function(e)
+			mousehold.call($upArrow, function()
 			{
-				e.preventDefault();
 				pleaseStepUp();
 			});
 
@@ -403,7 +445,9 @@
 	};
 
 	$.fn.timeslider.defaults = {
-		showValue: true
+		showValue: true,
+		holdTimeout: 100,
+		holdDelay: 3
 	};
 
 })(jQuery);
