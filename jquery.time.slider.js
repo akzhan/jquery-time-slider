@@ -361,15 +361,8 @@
 				pleaseSet(value);
 			};
 
-			mousehold.call($downArrow, options, function()
-			{
-				pleaseStepDown();
-			});
-
-			mousehold.call($upArrow, options, function()
-			{
-				pleaseStepUp();
-			});
+			mousehold.call($downArrow, options, pleaseStepDown);
+			mousehold.call($upArrow, options, pleaseStepUp);
 
 			$input.focus(function(e)
 			{
