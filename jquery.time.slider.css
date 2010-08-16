@@ -18,6 +18,7 @@ div.timeslider-labels, div.timeslider-label
 
 div.timeslider-container
 {
+	display: -moz-inline-box;
 	display: inline-block;
 }
 
