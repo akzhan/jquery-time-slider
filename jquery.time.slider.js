@@ -1,4 +1,4 @@
-/*global: jQuery, clearInterval, setInterval */
+/*global jQuery, clearInterval, setInterval */
 (function($)
 {
 	var reText = /^(\d+)\:(\d+)/;
