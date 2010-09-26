@@ -105,7 +105,7 @@
 				tickCount = 0;
 			};
 
-			$this.mousedown(function(e)
+			return $this.mousedown(function(e)
 			{
 				e.preventDefault();
 				callHandler();
