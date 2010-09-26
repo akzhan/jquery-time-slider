@@ -1,3 +1,4 @@
+/*global: jQuery, clearInterval, setInterval */
 (function($)
 {
 	var reText = /^(\d+)\:(\d+)/;
@@ -25,10 +26,10 @@
 		{
 			var r = new Date();
 			var m = text.match(reText);
-			if (m != null)
+			if (m !== null)
 			{
-				r.setHours(parseInt(m[1]));
-				r.setMinutes(parseInt(m[2]));
+				r.setHours(parseInt(m[1], 10));
+				r.setMinutes(parseInt(m[2], 10));
 			}
 			return utils.normalize(r);
 		},
@@ -70,7 +71,7 @@
 		},
 		isLeftEdge: function(value)
 		{
-			return  value.getHours() == 0 && value.getMinutes() == 0;
+			return  value.getHours() === 0 && value.getMinutes() === 0;
 		},
 		isRightEdge: function(value)
 		{
@@ -126,7 +127,7 @@
 	var TimeSlider = function(elt, options)
 	{
 		var $this = $(elt);
-		if (options == null)
+		if (options === null)
 		{
 			options = {};
 		}
@@ -328,7 +329,7 @@
 			}
 			var hours = value.getHours();
 			var minutes = value.getMinutes();
-			if (minutes == 0)
+			if (minutes === 0)
 			{
 				minutes = 45;
 				value.setHours(hours - 1);
