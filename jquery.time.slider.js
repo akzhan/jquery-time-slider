@@ -136,11 +136,11 @@
 		var fromInput = reInput.test(elt.tagName);
 		if (!options.value)
 		{
-			if (fromInput && $this.val() != '')
+			if (fromInput && $this.val() !== '')
 			{
 				options.value = $this.val();
 			}
-			else if (!fromInput && $this.text() != '')
+			else if (!fromInput && $this.text() !== '')
 			{
 				options.value = $this.text();
 			}
